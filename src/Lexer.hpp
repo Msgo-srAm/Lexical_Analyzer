@@ -1,3 +1,19 @@
+/**
+ * @file Lexer.hpp
+ * @brief 词法分析器的核心定义
+ *
+ * 本文件定义了基于有限自动机 (DFA) 的词法分析器.
+ * 包含状态转移矩阵的硬编码实现以及 Lexer 类的主体逻辑.
+ * 为了适配后续语法分析器的需求,token流除了会在命令行输出之外,还会输出到指定文件中.
+ *
+ * @author srAm-dev
+ * @version 0.1
+ * @date 2025-12-11
+ * @copyright Copyright (c) 2025 srAm-dev
+ * SPDX-License-Identifier: WTFPL
+ * Licensed under the WTFPL.
+ */
+
 #ifndef LEXER_H
 #define LEXER_H
 
@@ -9,7 +25,18 @@
 #include "Token.hpp"
 #include "State.hpp"
 
-// 状态转移函数
+/**
+ * @brief DFA状态转移函数
+ *
+ * 基于readme中构建的状态转移表,硬编码实现状态转移函数.
+ * 接收当前状态和输入字符,返回转移后的状态.
+ * 其中关于各个状态的详细定义可以在State.hpp中找到.
+ *
+ * @note 此处未处理注释和空白符的跳过逻辑,均在Lexer类中处理。
+ * @param currentState 当前自动机所处状态
+ * @param inputChar 当前输入字符
+ * @return State 转移后的状态
+ */
 State transition(State currentState, char inputChar) {
     switch (currentState) {
     case s0:
@@ -304,13 +331,29 @@ State transition(State currentState, char inputChar) {
     }
 }
 
+/**
+ * @class Lexer
+ * @brief 词法分析器类
+ *
+ * 实现基于DFA的词法分析器,负责从输入文件中读取字符流.
+ * 通过状态转移函数识别token,并将结果输出到命令行和指定文件中.
+ */
 class Lexer {
 private:
-    State currentState;
-    std::string currentLexeme;
-    std::ifstream inputFile;
-    std::vector<Token> tokenStream;
+    State currentState;             ///< 当前DFA状态
+    std::string currentLexeme;      ///< 当前输入词素
+    std::ifstream inputFile;        ///< 输入文件流
+    std::vector<Token> tokenStream; ///< 识别出的token流
 
+    /**
+     * @brief 尝试获取洗一个token
+     *
+     * 这是一个贪婪算法,按照现代词法分析器中的最长匹配原则设计.
+     * 只要下一个状态不是s_error(且下一个字符不是EOF),就继续吞入字符并转移状态.
+     *
+     * @return true 表示成功获取了一个token,这里s_error状态的token也算成功获取.
+     * @return false 只会在下一个字符是EOF且当前状态是s0时返回,表示当前文件已经读取完毕.
+     */
     bool getNextToken() {
         char ch;
         currentLexeme = "";
@@ -344,18 +387,45 @@ private:
     }
 
 public:
+    /**
+     * @brief Lexer构造函数
+     *
+     * 初始化词法分析器,打开指定输入文件.
+     *
+     * @param filename 源代码文件路径
+     */
     Lexer(std::string filename) : currentState(s0), currentLexeme("") {
         inputFile.open(filename, std::ios::in);
         tokenStream.clear();
     }
+
+    /**
+     * @brief Lexer析构函数
+     *
+     * 关闭输入文件流.
+     */
     ~Lexer() {
         if (inputFile.is_open()) inputFile.close();
     }
+
+    /**
+     * @brief Token输出函数
+     * 
+     * 循环调用getNextToken()函数,
+     * 依据每次调用返回值判断当前token的类型,
+     * 并将结果输出到命令行和指定文件中.
+     * 
+     * @param outputFilename 
+     */
     void tokenOutput(std::string outputFilename) {
         Tokentype currentToken;
         std::ofstream outputFile;
         outputFile.open(outputFilename, std::ios::out);
+
+        // 主循环，使用getNextToken()判断文件是否读取完毕
         while (getNextToken()) {
+
+            // 下面的逻辑依据currentState判断token类型，并向文件和命令行输出结果
             if (!isAccepting(currentState) || currentState == s_error) { // 非接受状态或错误状态，报错
                 currentToken = ERROR;
                 tokenStream.push_back({currentToken, currentLexeme});

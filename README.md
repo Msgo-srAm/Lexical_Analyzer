@@ -1,6 +1,23 @@
 # 东南大学编译原理课程实验一词法分析器
 
-除了下图中给出的，还加入了多行注释和，单行注释，以及ARRAY关键字，`[`和`]`
+使用方法
+1.clone项目
+
+    git clone https://github.com/srAm-dev/Lexical_Analyzer.git
+
+2.进入项目目录
+
+    cd Lexical_Analyzer
+
+3.编译项目
+
+    g++ src/main.cpp -o Lexer
+
+4.运行程序，输入为`./input/input1.txt`，输入文件为`./output/output1.txt`
+
+    ./Lexer ./input/input1.txt ./output/output1.txt
+
+词法分析器设计思路如下，除了下图中给出的，还加入了多行注释和，单行注释，以及ARRAY关键字，`[`和`]`
 ![单词类型](./picture/单词类型.png)
 
 ## a)定义正则表达式

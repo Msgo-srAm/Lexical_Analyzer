@@ -1,9 +1,25 @@
+/**
+ * @file Token.hpp
+ * @brief 定义词法单元及其类型
+ * @author srAm-dev
+ * @version 0.1
+ * @date 2025-12-11
+ * @copyright Copyright (c) 2025 srAm-dev
+ * SPDX-License-Identifier: WTFPL
+ * Licensed under the WTFPL.
+ */
 #ifndef TOKEN_H
 #define TOKEN_H
 
 #include <string>
 
-// 词法单元类型枚举
+/**
+ * @enum Tokentype
+ * @brief 词法单元类型枚举
+ *
+ * 定义了词法分析器中识别的各类token类型.
+ * 包括关键字、自定义符、运算符、注释与空格以及错误类型.
+ */
 enum Tokentype {
     // 关键字
     IF,
@@ -42,7 +58,12 @@ enum Tokentype {
     ERROR
 };
 
-// 词法单元结构体
+/**
+ * @struct Token
+ * @brief 词法单元结构体
+ *
+ * 包含词法单元的类型和对应的词素字符串.
+ */
 struct Token {
     Tokentype type;
     std::string lexeme;

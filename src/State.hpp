@@ -1,9 +1,26 @@
+/**
+ * @file State.hpp
+ * @brief 定义DFA的各个状态
+ * @author srAm-dev
+ * @version 0.1
+ * @date 2025-12-11
+ * @copyright Copyright (c) 2025 srAm-dev
+ * SPDX-License-Identifier: WTFPL
+ * Licensed under the WTFPL.
+ */
 #ifndef STATE_H
 #define STATE_H
 
-// 定义DFA的各个状态
-// 未进行标注的接受状态为ID接受状态
+/**
+ * @enum State
+ * @brief DFA状态枚举
+ *
+ * 定义了词法分析器中使用的各个状态.
+ * 每个状态的具体含义可以参考项目的README文档.
+ * @note s_error状态用于表示非法输入或无法转移的状态.
+ */
 enum State {
+    // 以下未进行标注的接受状态为ID接受状态(其中s0,s11,s33和s41是非接受状态)
     s0 = 0,
     s1,
     s2,
@@ -60,12 +77,16 @@ enum State {
     s54,
     s55,
     s56,
-    s57, // ARRAY接受状态
-    s_error = -1
+    s57,         // ARRAY接受状态
+    s_error = -1 // 错误状态
 };
 
-// 判断是否为接受状态
-// 0, 11, 33, 41 不是接受状态，其余均为接受状态
+/**
+ * @brief 判断输入状态状态是否为接受状态
+ * @param s 输入状态
+ * @return true  是接受状态
+ * @return false 不是接受状态
+ */
 inline bool isAccepting(State s) { return s != s0 && s != s11 && s != s33 && s != s41; }
 
 #endif
