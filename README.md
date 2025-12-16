@@ -124,4 +124,4 @@
 2.为了消除数组声明带来的二义性，增加了ARRAY关键字，用于数组声明，在Token.hpp中添加了ARRAY，State.hpp中添加s53,s54,s55,s56,s57,五个状态，其中第五个是对应接受状态，前四个接受到对应字母进入下一个状态。
 
 最终DFA示意图如下:
-![DFA示意图](picture\graphviz.svg)
+![DFA示意图](./picture/graphviz.svg)
